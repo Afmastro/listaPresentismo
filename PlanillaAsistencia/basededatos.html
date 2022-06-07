@@ -1,0 +1,168 @@
+<html xmlns="https://www.w3.org/1999/xhtml">
+ <head>
+    <title>base de datos</title>
+    <script type="text/javascript">
+       var db = null;
+       function iniciarDB(){
+          abrirDB();
+          crearTablas();
+       }
+       function abrirDB(){
+          try{
+             db = openDatabase('db_test', '1.0', 'Database Prueba', 200000);
+          }catch(e){
+             document.write('La aplicacion no soporta html5 database.');
+          }
+       }
+       function crearTablas(){
+          db.transaction(function(tx){
+             tx.executeSql('CREATE TABLE IF NOT EXISTS instrumento(ide integer primary key autoincrement, nombre text)');
+          });
+       }
+       function guardarInstrumento(nombre, ide, funcion_de_respuesta){
+          if(ide){
+             db.transaction(function(tx){
+                tx.executeSql('UPDATE instrumento SET nombre = ? WHERE ide = ?', [nombre, ide], function(){
+ funcion_de_respuesta(true);
+                }, function(){
+                   funcion_de_respuesta(false);
+                });
+             });
+         }else{
+            db.transaction(function(tx){
+               tx.executeSql('INSERT INTO instrumento(nombre) VALUES(?)', [nombre], function(tx, respuesta){
+                    funcion_de_respuesta(true);
+               }, function(tx, respuesta){
+                    funcion_de_respuesta(false);
+               });
+            });
+         }
+      }
+      function eliminarInstrumento(ide, funcion_de_respuesta){
+         db.transaction(function(tx){
+            tx.executeSql('DELETE FROM instrumento WHERE ide = ?', [ide], function(){
+               funcion_de_respuesta(true);
+            }, function(){
+               funcion_de_respuesta(false);
+            });
+         });
+      }
+      function cargarInstrumentoPorId(ide, funcion_de_respuesta){
+         var instrumento_item = {
+            ide: null,
+            nombre: null
+         };
+         db.transaction(function(tx){
+            tx.executeSql('SELECT ide, nombre FROM instrumento WHERE ide = ?', [ide], function(tx, respuesta){
+               instrumento_item.ide = respuesta.rows.item(0).ide;
+               instrumento_item.nombre = respuesta.rows.item(0).nombre;
+               funcion_de_respuesta(true, instrumento_item);
+            }, function(tx, respuesta){
+               funcion_de_respuesta(false, instrumento_item);
+            });
+         });
+      }
+      function cargarInstrumentos(funcion_de_respuesta){
+         var lista = new Array();
+         db.transaction(function(tx){
+            tx.executeSql('SELECT ide, nombre FROM instrumento', [], function(tx, respuesta){
+               for(var i = 0; i < respuesta.rows.length; i++){
+                  lista.push({
+                     ide: respuesta.rows.item(i).ide,
+                     nombre: respuesta.rows.item(i).nombre
+                  });
+               }
+               funcion_de_respuesta(true, lista);
+            }, function(){
+               funcion_de_respuesta(false, lista);
+            });
+         });
+      }
+      function mostrarInstrumentos(lista){
+         document.getElementById('lista').innerHTML = '';
+         var ide;
+         var nombre;
+         var item;
+         for(var i = 0; i < lista.length; i++){
+            ide = lista[i].ide;
+            nombre = lista[i].nombre;
+            item = crearItemInstrumento(ide, nombre);
+            document.getElementById('lista').appendChild(item);
+         }
+      }
+      function crearItemInstrumento(ide, nombre){
+         var li = document.createElement('li');
+         var nombre_item = document.createElement('p');
+         nombre_item.innerHTML = nombre;
+         var boton_modificar = document.createElement('input');
+         boton_modificar.type = 'button';
+         boton_modificar.value = 'Modificar';
+         boton_modificar.onclick = function(){
+            cargarInstrumentoPorId(ide, function(respuesta, instrumento){
+               if(respuesta){
+                  document.getElementById('nombre_instrumento').value = instrumento.nombre;
+                  document.getElementById('ide_instrumento').value = instrumento.ide;
+               }else{
+                  alert('Error al cargar el instrumento')
+               }
+            });
+        }
+        var boton_eliminar = document.createElement('input');
+        boton_eliminar.type = 'button';
+        boton_eliminar.value = 'Eliminar';
+        boton_eliminar.onclick = function(){
+           eliminarInstrumento(ide, function(respuesta){
+              if(respuesta){
+                 refrescarListaInstrumentos();
+                 alert('El instrumento ha sido eliminado');
+              }else{
+                 alert('Error al intentar eliminar el instrumento')
+              }
+           });
+       }
+       li.appendChild(nombre_item);
+       li.appendChild(boton_modificar);
+       li.appendChild(boton_eliminar);
+       return li;
+    }
+    function refrescarListaInstrumentos(){
+       cargarInstrumentos(function(respuesta, lista){
+          if(respuesta){
+             mostrarInstrumentos(lista);
+          }else{
+             alert('No se han podido cargar la lista de instrumentos');
+          }
+       });
+    }
+    window.onload = function(){
+       iniciarDB();
+       refrescarListaInstrumentos();
+       document.getElementById('boton_guardar').onclick = function(){
+          if(document.getElementById('formulario').checkValidity()){
+             var nombre_instrumento = document.getElementById('nombre_instrumento');
+             var ide_instrumento = document.getElementById('ide_instrumento');
+             guardarInstrumento(nombre_instrumento.value, ide_instrumento.value, function(respuesta){
+                if(respuesta){
+                   nombre_instrumento.value = '';
+                   ide_instrumento.value = '';
+                   refrescarListaInstrumentos();
+                   alert('El registro ha sido guardado con exito');
+                }else{
+                   alert('El registro no ha podido ser guardado');
+                }
+             });
+          }
+       };
+    }
+    </script>
+ </head>
+ <body>
+    <form id="formulario" action="javascript:void(0);">
+       <ul id="lista"></ul>
+       <label> Nombre del instrumento </label>
+       <input type="text" id="nombre_instrumento" required />
+       <input type="hidden" id="ide_instrumento" />
+       <input type="submit" id="boton_guardar" value="Guardar" />
+    </form>
+ </body>
+</html>
