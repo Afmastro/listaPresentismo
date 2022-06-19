@@ -1,3 +1,10 @@
-let almas = [
+var almas = [
     "Abalos Mabel", "Abregú Silvana", "Abregú	Gabriela", "Abregú	Elvio", "Abregú	Esteban", "Abregú Analia", "Espindola Luisa", "Prelatto	Fiorella", "Rosales Prelatto Emma", "Tellechea Prelato Martina","Alarcon Nahuel", "Alarcon Gabriel", "Alarcón Paula", "Alarcón Pablo", "Barat y Carrizo Maria Teresa", "Mayer	Carina Elisabet", "Astorino Candela", "Astorino Pablo Damián", "Astorino Juan Carlos", "Astorino Joaquín", "Carnuccio María", "Grillo Valeria Jessica", "Centurión Juan Carlos", "Fernández	Gonzalo", "Fernández Sergio", "Figueroa Mónica", "Garelli Jonatan", "Gatti Santiago", "Gatti Vigo Matilde", "Gatti Vigo	Leonor", "Vigo Olga", "Amitrano María Ida", "Balderrama	Julieta", "Grillo	Gianfranco", "Grillo Lucca", "Grillo Valentin", "Ibarra Ruben", "Ruiz  Brisa", "Hayrabedian Marina", "Klosznik	Mario", "Lopez	Noemí Beatriz", "Gofredo Lucero	Alejandra", "Lucero	Diego", "Lupone	Fernando", "Aguilar	Aaron", "Aguilar Axel", "La Bella Georgina", "Mastrolorenzo	Andres", "Mastrolorenzo	Bastian","Mastrolorenzo Benjamin", "Pirraglia Dominga", "Saracino Lina", "Nievas Marianela", "Nievas Vanesa", "Selvini	Luis", "Cardozo	Andrea", "Gonzalez	Alicia", "Ortega	Mariana alejandra", "Ortega	Nahiara", "Ortega Karina", "Britez	Pedro", "Britez	Mariana","Outeda Gabriel", "Outeda Britez Victoria", "Outeda Britez	Delfina", "Safi	Susana", "Savall Britez	Nelcia", "Oyola	Javier", "Oyola	Rodrigo", "Oyola Caren", "Núñez	Dahiana", "Pacheco	Valentina Abril", "Pacheco	Demian Jonás", "Pacheco Hernán", "Perez	Agustín", "Medina Mara", "Pirraglia	Osvaldo", "Ramirez	Maria", "Salerno Elizabeth Grisel", "Santomauro	Leandro", "Davter Miguel Ernesto", "Ifran Nelida Beatriz", "Savoia	Elena", "Savoia	Tony", "Savoia	Angela", "Zelarayan	Elisa", "Zelarayan	Florencia", "Zelarrayan Dominga", "Grasi Maria Eva", "Banegas Cristina", "Banegas Diego", "Olivera	Zulma", "Nowell	Graciela","Canteros Carlos", "Pedrol Pablo"
 ]
+
+function listaNombres() {
+    for (i = 0; i<= almas.length -1; i++){
+     document.write("<option> " + almas[i] + " </option>");
+    }
+    }
+    
