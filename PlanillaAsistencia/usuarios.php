@@ -1,10 +1,10 @@
 <!-- conexion a la base de datos -->
 <?php
-$enlace = mysqli_connect("localhost","root","");
+$enlace = mysqli_connect("localhost","root","",);
 if (!$enlace) {
     die('Nada por aqui: '.mysqli_error());
 } 
-$db_seleccionada = mysqli_select_db('usuarios', $enlace);
+$db = mysqli_select_db('mysqli','usuarios');
 if (!$enlace){
     die ('Nada por alla: '.mysqli_error());
 } 
@@ -16,18 +16,18 @@ $comunidad = $_POST["comunidad"];
 $cargo = $_POST["cargo"];
 $usuario = $_POST["usuario"];
 $Pass = $_POST["contrasenia"];
-$RPass = $_POST["confirmar contrasenia"];
+$Rpass = $_POST["confirmar_contrasenia"];
 
 // <!-- confirmacion de contraseña -->
-if ($Pass != $Pass)
+if ($Pass != $Rpass)
     die ("<h2>Algo esta mal<h2>");
 
 
 // <!-- encriptar contraseñas 
-$contraseña = md5 ($Pass);
+$contrasenia = md5($Pass);
 
 // <!-- ingresa la info a la tabla -->
-$sql = "insert into registro values ('$nombre','$apellido','$comunidad','$cargo','$usuario','$contraseña'),$enlace)" or die ("<h2>No se mando nada</h2>");
+$sql = "insert into registro values ('$nombre','$apellido','$comunidad','$cargo','$usuario','$contrasenia'),$enlace)";
 
 // <!-- redirige a la pagina -->
 echo 
